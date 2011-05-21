@@ -43,9 +43,12 @@ class Testhandler(WebSocketHandler):
         # in a dictionary mapping some client identifier (like IPs) against
         # self (this handler object)
 
+        self.loseConnection()
+
     def connectionLost(self, reason):
         print 'Lost connection.'
-        self.periodic_call.stop()
+        if self.periodic_call.running:
+            self.periodic_call.stop()
         del self.periodic_call
         # here is a good place to deregister this handler object
 

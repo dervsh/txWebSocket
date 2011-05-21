@@ -324,10 +324,15 @@ class WebSocketTransport(object):
         """
         Forward connection lost event to the L{WebSocketHandler}.
         """
-        self._handler.connectionLost(reason)
-        del self._request.transport
-        del self._request
-        del self._handler
+        #print reason
+        if self._handler:
+            self._handler.connectionLost(reason)
+            del self._handler
+        try:
+            del self._request.transport
+            del self._request
+        except:
+            pass
 
     def getPeer(self):
         """
@@ -416,6 +421,9 @@ class WebSocketHandler(object):
         connection is closed.
         """
 
+    def loseConnection(self):
+        self.transport.loseConnection()
+        self.connectionLost(None)
 
 
 class WebSocketFrameDecoder(object):
